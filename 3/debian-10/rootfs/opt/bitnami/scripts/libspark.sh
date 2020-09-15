@@ -78,10 +78,10 @@ spark_validate() {
 
     # Validate spark mode
     case "$SPARK_MODE" in
-        master|worker)
+        master|worker|client)
         ;;
         *)
-            print_validation_error "Invalid mode $SPARK_MODE. Supported types are 'master/worker'"
+            print_validation_error "Invalid mode $SPARK_MODE. Supported types are 'master/worker/client'"
     esac
 
     # Validate worker node inputs

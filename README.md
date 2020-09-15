@@ -94,7 +94,7 @@ $ docker run -d --name spark \
 
 Available variables:
 
-* SPARK_MODE: Cluster mode starting Spark. Valid values: *master*, *worker*. Default: **master**
+* SPARK_MODE: Cluster mode starting Spark. Valid values: *master*, *worker*, *client*. Default: **master**
 * SPARK_MASTER_URL: Url where the worker can find the master. Only needed when spark mode is *worker*. Default: **spark://spark-master:7077**
 * SPARK_RPC_AUTHENTICATION_ENABLED: Enable RPC authentication. Default: **no**
 * SPARK_RPC_AUTHENTICATION_SECRET: The secret key used for RPC authentication. No defaults.
@@ -209,6 +209,27 @@ $ pyspark
 >>> sc._gateway.jvm.org.apache.hadoop.util.VersionInfo.getVersion()
 '2.7.4'
 ```
+
+### Submitting applications
+
+When using the *client* mode, Spark will not run as a daemon. You can then use `spark-submit` to run jobs on a cluster.
+
+```yaml
+environment:
+  - SPARK_MODE=client
+ports:
+  - '4040:4040'
+command:
+  - spark-submit
+  - --class
+  - org.apache.spark.examples.SparkPi
+  - --master
+  - spark://spark:7077
+  - https://repo1.maven.org/maven2/org/apache/spark/spark-examples_2.10/1.1.1/spark-examples_2.10-1.1.1.jar
+  - "1000"
+```
+
+Note: If using `--deploy-mode cluster` the master to where you are trying to connect needs to be up and running. This is why using this mode with `docker-compose` will most often result in the submitted application to fail. It is best to use the default `--deploy-mode client` with `docker-compose`.
 
 # Logging
 
